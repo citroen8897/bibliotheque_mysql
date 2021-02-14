@@ -11,6 +11,7 @@ while True:
                          '4 - посмотреть список книг в наличии\n'
                          '5 - посмотреть список книг выданных читателям\n'
                          '9 - добавить читателя\n'
+                         '10 - посмотреть список читателей\n'
                          '______________________________\n'
                          'Ваш выбор: ')
 
@@ -59,3 +60,10 @@ while True:
                                            new_reader.bth_an,
                                            new_reader.rue,
                                            new_reader.maison)
+
+    elif user_input_1 == '10':
+        print('\n______________________________\n'
+              'Полная картотека читателей:\n')
+        for element in mysql_methods.get_all_readers_data_base():
+            print(element)
+        print('______________________________')
