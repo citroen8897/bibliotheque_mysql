@@ -80,3 +80,32 @@ def get_all_livres_data_base():
         cursor.close()
 
     return list_des_livres
+
+
+def add_reader_data_base(nom, prenom, birth_jour, birth_mois, birth_an, rue,
+                         maison):
+    try:
+        conn = mysql.connector.connect(user='root',
+                                       host='localhost',
+                                       database='mysql')
+
+        if conn.is_connected():
+            new_reader = "INSERT INTO readers(nom, prenom, birth_jour, " \
+                         "birth_mois, birth_an, rue, maison) " \
+                         "VALUES(%s,%s,%s,%s,%s,%s,%s)"
+            cursor = conn.cursor()
+            cursor.execute(new_reader, (nom, prenom, birth_jour, birth_mois,
+                                        birth_an, rue, maison))
+
+            if cursor.lastrowid:
+                print('успешно добавлена запись. id читателя: ',
+                      cursor.lastrowid)
+            else:
+                print('какая-то ошибка...')
+
+            conn.commit()
+    except Error as error:
+        print(error)
+    finally:
+        conn.close()
+        cursor.close()

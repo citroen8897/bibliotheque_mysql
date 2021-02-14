@@ -1,4 +1,5 @@
 import livre
+import reader
 import mysql_methods
 
 while True:
@@ -9,6 +10,7 @@ while True:
                          '3 - посмотреть полный список книг\n'
                          '4 - посмотреть список книг в наличии\n'
                          '5 - посмотреть список книг выданных читателям\n'
+                         '9 - добавить читателя\n'
                          '______________________________\n'
                          'Ваш выбор: ')
 
@@ -47,3 +49,13 @@ while True:
             if element.triger == 0:
                 print(element)
         print('______________________________')
+
+    elif user_input_1 == '9':
+        new_reader = reader.Reader(0, '', '', '', '', '', '!', '')
+        mysql_methods.add_reader_data_base(new_reader.nom,
+                                           new_reader.prenom,
+                                           new_reader.bth_jour,
+                                           new_reader.bth_mois,
+                                           new_reader.bth_an,
+                                           new_reader.rue,
+                                           new_reader.maison)
