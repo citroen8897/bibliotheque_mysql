@@ -168,6 +168,8 @@ def select_livre(livre_id):
                 while row is not None:
                     current_livre['id книги'] = row[0]
                     current_livre['название книги'] = row[1]
+                    current_livre['автор'] = row[2]
+                    current_livre['год издания'] = row[3]
                     current_livre['triger'] = row[4]
                     row = cursor.fetchone()
             else:
@@ -315,3 +317,29 @@ def get_info_de_reader(id_reader):
             conn.close()
             cursor.close()
         return info_de_reader
+
+
+def get_info_de_livre(id_livre):
+    info_de_livre = select_livre(id_livre)
+    if info_de_livre:
+        try:
+            conn = mysql.connector.connect(user='root',
+                                           host='localhost',
+                                           database='mysql')
+            if conn.is_connected():
+                cursor = conn.cursor()
+                cursor.execute(f"SELECT * FROM History_de_bibliotheque WHERE "
+                               f"id_livre = {id_livre}")
+                row = cursor.fetchone()
+                temp_list = []
+                while row is not None:
+                    temp_list.append([row[0], row[3], row[4], row[5], row[6],
+                                      row[7]])
+                    row = cursor.fetchone()
+                info_de_livre['история операций'] = temp_list
+        except Error as error:
+            print(error)
+        finally:
+            conn.close()
+            cursor.close()
+        return info_de_livre

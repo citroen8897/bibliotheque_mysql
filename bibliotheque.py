@@ -16,6 +16,7 @@ while True:
                          '9 - добавить читателя\n'
                          '10 - посмотреть список читателей\n'
                          '11 - посмотреть карточку читателя\n'
+                         '12 - посмотреть карточку книги\n'
                          '0 - выход из программы\n'
                          '______________________________\n'
                          'Ваш выбор: ')
@@ -163,6 +164,33 @@ while True:
                       f'название книги: {element[2]}\n'
                       f'тип операции: {element[3]}\n'
                       f'дата/время: {element[4]}\n')
+
+    elif user_input_1 == '12':
+        user_input_6 = input('Введите id книги: ')
+        while not user_input_6.isdigit():
+            user_input_6 = input('Введите id читателя: ')
+        current_livre = mysql_methods.get_info_de_livre(int(user_input_6))
+        if current_livre:
+            if current_livre["triger"] == 0:
+                current_status = 'у читателя'
+            else:
+                current_status = 'в наличии'
+            print('\n______________________________\n'
+                  'КАРТОЧКА КНИГИ:\n')
+            print(f'__//__ОСНОВНАЯ ИНФОРМАЦИЯ__//__\n'
+                  f'id книги: {current_livre["id книги"]}\n'
+                  f'название: {current_livre["название книги"]}\n'
+                  f'автор: {current_livre["автор"]}\n'
+                  f'год издания: {current_livre["год издания"]}\n'
+                  f'статус: {current_status}\n\n'
+                  f'__//__ИСТОРИЯ ОПЕРАЦИЙ__//__\n')
+            for element in current_livre['история операций']:
+                print(f'id операции: {element[0]}\n'
+                      f'id читателя: {element[1]}\n'
+                      f'фамилия читателя: {element[2]}\n'
+                      f'имя читателя: {element[3]}\n'
+                      f'тип операции: {element[4]}\n'
+                      f'дата/время: {element[5]}\n')
 
     elif user_input_1 == '0':
         input('Нажмите Enter для выхода')
