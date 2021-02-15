@@ -214,10 +214,10 @@ def select_reader(reader_id):
     return current_reader
 
 
-def envoyer_livre(current_livre, current_reader):
+def envoyer_livre(current_livre, current_reader, operation):
     id_livre = current_livre['id книги']
     nom_livre = current_livre['название книги']
-    status = current_livre['triger']
+    action = operation
     id_reader = current_reader['id читателя']
     prenom_reader = current_reader['фамилия']
     nom_reader = current_reader['имя']
@@ -231,10 +231,10 @@ def envoyer_livre(current_livre, current_reader):
             new_position = "INSERT INTO History_de_bibliotheque(" \
                            "id_livre, nom_livre, " \
                            "id_reader, prenom_reader, nom_reader, " \
-                           "status_livre) VALUES(%s,%s,%s,%s,%s,%s)"
+                           "action) VALUES(%s,%s,%s,%s,%s,%s)"
             cursor = conn.cursor()
             cursor.execute(new_position, (id_livre, nom_livre, id_reader,
-                                          prenom_reader, nom_reader, status))
+                                          prenom_reader, nom_reader, action))
 
             if cursor.lastrowid:
                 print('успешно добавлена запись. id - >', cursor.lastrowid)
@@ -260,15 +260,31 @@ def ajouter_status_livre(livre_id, livre_status):
                          f"WHERE id = {livre_id}"
             cursor = conn.cursor()
             cursor.execute(new_status)
-
-            if cursor.lastrowid:
-                print('успешно добавлена запись. id книги: ', cursor.lastrowid)
-            else:
-                print('какая-то ошибка...')
-
             conn.commit()
     except Error as error:
         print(error)
     finally:
         conn.close()
         cursor.close()
+
+
+def control_de_envoyer_livre(id_livre):
+    try:
+        conn = mysql.connector.connect(user='root',
+                                       host='localhost',
+                                       database='mysql')
+        if conn.is_connected():
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT * FROM History_de_bibliotheque WHERE "
+                           f"id_livre = {id_livre}")
+            row = cursor.fetchone()
+            temp_list = []
+            while row is not None:
+                temp_list.append({'id_reader': row[3], 'action': row[6]})
+                row = cursor.fetchone()
+    except Error as error:
+        print(error)
+    finally:
+        conn.close()
+        cursor.close()
+    return temp_list

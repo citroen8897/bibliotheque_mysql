@@ -86,11 +86,43 @@ while True:
 
     elif user_input_1 == '7':
         user_input_4 = input('Введите id книги: ')
+        while not user_input_4.isdigit():
+            user_input_4 = input('Введите id книги: ')
         user_input_5 = input('Введите id читателя: ')
-        mysql_methods.ajouter_status_livre(int(user_input_4), 0)
+        while not user_input_5.isdigit():
+            user_input_5 = input('Введите id читателя: ')
+
         current_livre = mysql_methods.select_livre(int(user_input_4))
         current_reader = mysql_methods.select_reader(int(user_input_5))
-        mysql_methods.envoyer_livre(current_livre, current_reader)
+        if current_livre and current_reader:
+            if current_livre['triger'] == 1:
+                mysql_methods.ajouter_status_livre(int(user_input_4), 0)
+                mysql_methods.envoyer_livre(current_livre, current_reader,
+                                            'выдача книги')
+            else:
+                print('Книга уже выдана другому читателю!')
+
+    elif user_input_1 == '8':
+        user_input_4 = input('Введите id книги: ')
+        while not user_input_4.isdigit():
+            user_input_4 = input('Введите id книги: ')
+        user_input_5 = input('Введите id читателя: ')
+        while not user_input_5.isdigit():
+            user_input_5 = input('Введите id читателя: ')
+
+        current_livre = mysql_methods.select_livre(int(user_input_4))
+        current_reader = mysql_methods.select_reader(int(user_input_5))
+        if current_livre and current_reader:
+            if current_livre['triger'] == 0:
+                verification = mysql_methods.control_de_envoyer_livre(int(user_input_4))
+                if verification[-1]['id_reader'] == int(user_input_5):
+                    mysql_methods.ajouter_status_livre(int(user_input_4), 1)
+                    mysql_methods.envoyer_livre(current_livre, current_reader,
+                                                'прием книги')
+                else:
+                    print('У указанного читателя нет данной книги!')
+            else:
+                print('Книга находится в библиотеке!')
 
     elif user_input_1 == '9':
         new_reader = reader.Reader(0, '', '', '', '', '', '!', '')
