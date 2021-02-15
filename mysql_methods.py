@@ -202,6 +202,8 @@ def select_reader(reader_id):
                     current_reader['id читателя'] = row[0]
                     current_reader['фамилия'] = row[2]
                     current_reader['имя'] = row[1]
+                    current_reader['улица'] = row[6]
+                    current_reader['№ дома'] = row[7]
                     row = cursor.fetchone()
             else:
                 print('Читателя с указанным id в картотеке нет!')
@@ -288,3 +290,28 @@ def control_de_envoyer_livre(id_livre):
         conn.close()
         cursor.close()
     return temp_list
+
+
+def get_info_de_reader(id_reader):
+    info_de_reader = select_reader(id_reader)
+    if info_de_reader:
+        try:
+            conn = mysql.connector.connect(user='root',
+                                           host='localhost',
+                                           database='mysql')
+            if conn.is_connected():
+                cursor = conn.cursor()
+                cursor.execute(f"SELECT * FROM History_de_bibliotheque WHERE "
+                               f"id_reader = {id_reader}")
+                row = cursor.fetchone()
+                temp_list = []
+                while row is not None:
+                    temp_list.append([row[0], row[1], row[2], row[6], row[7]])
+                    row = cursor.fetchone()
+                info_de_reader['история операций'] = temp_list
+        except Error as error:
+            print(error)
+        finally:
+            conn.close()
+            cursor.close()
+        return info_de_reader

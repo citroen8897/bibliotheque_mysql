@@ -142,6 +142,28 @@ while True:
             print(element)
         print('______________________________')
 
+    elif user_input_1 == '11':
+        user_input_6 = input('Введите id читателя: ')
+        while not user_input_6.isdigit():
+            user_input_6 = input('Введите id читателя: ')
+        current_reader = mysql_methods.get_info_de_reader(int(user_input_6))
+        if current_reader:
+            print('\n______________________________\n'
+                  'КАРТОЧКА ЧИТАТЕЛЯ:\n')
+            print(f'__//__ОСНОВНАЯ ИНФОРМАЦИЯ__//__\n'
+                  f'id читателя: {current_reader["id читателя"]}\n'
+                  f'фамилия: {current_reader["фамилия"]}\n'
+                  f'имя: {current_reader["имя"]}\n'
+                  f'улица: {current_reader["улица"]}\n'
+                  f'№ дома: {current_reader["№ дома"]}\n\n'
+                  f'__//__ИСТОРИЯ ОПЕРАЦИЙ__//__\n')
+            for element in current_reader['история операций']:
+                print(f'id операции: {element[0]}\n'
+                      f'id книги: {element[1]}\n'
+                      f'название книги: {element[2]}\n'
+                      f'тип операции: {element[3]}\n'
+                      f'дата/время: {element[4]}\n')
+
     elif user_input_1 == '0':
         input('Нажмите Enter для выхода')
         break
