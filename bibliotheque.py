@@ -10,8 +10,13 @@ while True:
                          '3 - посмотреть полный список книг\n'
                          '4 - посмотреть список книг в наличии\n'
                          '5 - посмотреть список книг выданных читателям\n'
+                         '6 - сортировка книг в картотеке\n'
+                         '7 - выдать книгу читателю\n'
+                         '8 - принять книгу от читателя\n'
                          '9 - добавить читателя\n'
                          '10 - посмотреть список читателей\n'
+                         '11 - посмотреть карточку читателя\n'
+                         '0 - выход из программы\n'
                          '______________________________\n'
                          'Ваш выбор: ')
 
@@ -51,6 +56,42 @@ while True:
                 print(element)
         print('______________________________')
 
+    elif user_input_1 == '6':
+        user_input_3 = input(
+            'Сортировка по названию книги - нажмите 1\n'
+            'Сортировка по автору книги - нажмите 2\n'
+            'Сортировка по году издания книги - нажмите 3\n'
+        )
+        if user_input_3 == '1':
+            print('\n______________________________\n'
+                  'Список книг, отсортированных по названию книги:\n')
+            for element in sorted(mysql_methods.get_all_livres_data_base(),
+                                  key=lambda element: element.nom):
+                print(element)
+            print('______________________________')
+        elif user_input_3 == '2':
+            print('\n______________________________\n'
+                  'Список книг, отсортированных по автору книги:\n')
+            for element in sorted(mysql_methods.get_all_livres_data_base(),
+                                  key=lambda element: element.author):
+                print(element)
+            print('______________________________')
+        elif user_input_3 == '3':
+            print('\n______________________________\n'
+                  'Список книг, отсортированных по году издания книги:\n')
+            for element in sorted(mysql_methods.get_all_livres_data_base(),
+                                  key=lambda element: element.year):
+                print(element)
+            print('______________________________')
+
+    elif user_input_1 == '7':
+        user_input_4 = input('Введите id книги: ')
+        user_input_5 = input('Введите id читателя: ')
+        mysql_methods.ajouter_status_livre(int(user_input_4), 0)
+        current_livre = mysql_methods.select_livre(int(user_input_4))
+        current_reader = mysql_methods.select_reader(int(user_input_5))
+        mysql_methods.envoyer_livre(current_livre, current_reader)
+
     elif user_input_1 == '9':
         new_reader = reader.Reader(0, '', '', '', '', '', '!', '')
         mysql_methods.add_reader_data_base(new_reader.nom,
@@ -67,3 +108,7 @@ while True:
         for element in mysql_methods.get_all_readers_data_base():
             print(element)
         print('______________________________')
+
+    elif user_input_1 == '0':
+        input('Нажмите Enter для выхода')
+        break

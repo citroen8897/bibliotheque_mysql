@@ -146,3 +146,129 @@ def get_all_readers_data_base():
         cursor.close()
 
     return list_des_readers
+
+
+def select_livre(livre_id):
+    try:
+        conn = mysql.connector.connect(user='root',
+                                       host='localhost',
+                                       database='mysql')
+        current_livre = {}
+        if conn.is_connected():
+            list_de_id = []
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM livres")
+            row = cursor.fetchone()
+            while row is not None:
+                list_de_id.append(row[0])
+                row = cursor.fetchone()
+            if livre_id in list_de_id:
+                cursor.execute(f"SELECT * FROM livres WHERE id = {livre_id}")
+                row = cursor.fetchone()
+                while row is not None:
+                    current_livre['id книги'] = row[0]
+                    current_livre['название книги'] = row[1]
+                    current_livre['triger'] = row[4]
+                    row = cursor.fetchone()
+            else:
+                print('Книги с указанным id в картотеке нет!')
+
+    except Error as error:
+        print(error)
+    finally:
+        conn.close()
+        cursor.close()
+    return current_livre
+
+
+def select_reader(reader_id):
+    try:
+        conn = mysql.connector.connect(user='root',
+                                       host='localhost',
+                                       database='mysql')
+        current_reader = {}
+        if conn.is_connected():
+            list_de_id = []
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM readers")
+            row = cursor.fetchone()
+            while row is not None:
+                list_de_id.append(row[0])
+                row = cursor.fetchone()
+            if reader_id in list_de_id:
+                cursor.execute(f"SELECT * FROM readers WHERE id = {reader_id}")
+                row = cursor.fetchone()
+                while row is not None:
+                    current_reader['id читателя'] = row[0]
+                    current_reader['фамилия'] = row[2]
+                    current_reader['имя'] = row[1]
+                    row = cursor.fetchone()
+            else:
+                print('Читателя с указанным id в картотеке нет!')
+
+    except Error as error:
+        print(error)
+    finally:
+        conn.close()
+        cursor.close()
+    return current_reader
+
+
+def envoyer_livre(current_livre, current_reader):
+    id_livre = current_livre['id книги']
+    nom_livre = current_livre['название книги']
+    status = current_livre['triger']
+    id_reader = current_reader['id читателя']
+    prenom_reader = current_reader['фамилия']
+    nom_reader = current_reader['имя']
+    try:
+        conn = mysql.connector.connect(user='root',
+                                       host='localhost',
+                                       database='mysql')
+
+        if conn.is_connected():
+            print('Соединение с базой данных товаров установлено....')
+            new_position = "INSERT INTO History_de_bibliotheque(" \
+                           "id_livre, nom_livre, " \
+                           "id_reader, prenom_reader, nom_reader, " \
+                           "status_livre) VALUES(%s,%s,%s,%s,%s,%s)"
+            cursor = conn.cursor()
+            cursor.execute(new_position, (id_livre, nom_livre, id_reader,
+                                          prenom_reader, nom_reader, status))
+
+            if cursor.lastrowid:
+                print('успешно добавлена запись. id - >', cursor.lastrowid)
+            else:
+                print('какая-то ошибка...')
+
+            conn.commit()
+    except Error as error:
+        print(error)
+    finally:
+        conn.close()
+        cursor.close()
+
+
+def ajouter_status_livre(livre_id, livre_status):
+    try:
+        conn = mysql.connector.connect(user='root',
+                                       host='localhost',
+                                       database='mysql')
+
+        if conn.is_connected():
+            new_status = f"UPDATE livres SET triger = {livre_status} " \
+                         f"WHERE id = {livre_id}"
+            cursor = conn.cursor()
+            cursor.execute(new_status)
+
+            if cursor.lastrowid:
+                print('успешно добавлена запись. id книги: ', cursor.lastrowid)
+            else:
+                print('какая-то ошибка...')
+
+            conn.commit()
+    except Error as error:
+        print(error)
+    finally:
+        conn.close()
+        cursor.close()
