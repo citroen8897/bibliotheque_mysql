@@ -114,7 +114,8 @@ while True:
         current_reader = mysql_methods.select_reader(int(user_input_5))
         if current_livre and current_reader:
             if current_livre['triger'] == 0:
-                verification = mysql_methods.control_de_envoyer_livre(int(user_input_4))
+                verification = \
+                    mysql_methods.control_de_envoyer_livre(int(user_input_4))
                 if verification[-1]['id_reader'] == int(user_input_5):
                     mysql_methods.ajouter_status_livre(int(user_input_4), 1)
                     mysql_methods.envoyer_livre(current_livre, current_reader,
